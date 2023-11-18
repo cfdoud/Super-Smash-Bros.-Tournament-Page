@@ -1,4 +1,4 @@
--- SQLite
+-- SQLite chaanged up
 INSERT INTO player (playerID, player_name, rank, sponsor, controllertype, countryID) 
 VALUES (NULL, 'GamesDean', 88, 'VGHS', 'WiiMote', NULL);
 
