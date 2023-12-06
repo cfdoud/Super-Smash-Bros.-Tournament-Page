@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Smash Brothers Tournament</title>
+    <!--<link rel="stylesheet" type="text/css" href="style.css"> -->
+    <h1 
+        style="
+        text-align: center,
+        font-size: 50px,
+        justify-content: center,
+        ;"
+        >Super Smash Brothers Tournament</h1>
+    
+    <ul>
+        <li><a href="/">Home</a></li> 
+        <li><a href="{{ url_for('character_page') }}">Character</a></li>
+        <li><a href="{{ url_for('register_page') }}">Player</a></li>
+        <li><a href="/tournament">Tournament</a></li>
+        <li><a href="/match">Match</a></li>
+    </ul>
+    <h1>Roster</h1>
+    <p>Roster page</p>
+    <button><a href="{{ url_for('roster_page') }}">Roster</a></button>
+    <table>
+    <tr>
+        <th>Name</th>
+        <th>Sponsor</th>
+        <th>Country</th>
+        <th>Controller</th>
+        <th>Main</th>
+        <th>Secondary</th>
+        <th>Tertiary</th>
+    </tr>
+    {% for player in players %}
+<tr>
+    <td>{{ player[1] }}</td>
+    <td>{{ player[3] }}</td>
+    <td>{{ player[4] }}</td>
+
+    <!-- Add other fields as needed -->
+</tr>
+{% endfor %}
+    </table>
+
+  
+
+</head>
+
+    
+</html>
