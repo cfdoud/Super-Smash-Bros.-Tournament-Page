@@ -1,0 +1,50 @@
+This is the character page. It displays all the characters in the database. 
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Smash Brothers Tournament</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <h1 
+        style="
+        text-align: center, font-size: 50px, justify-content: center;"
+        >Super Smash Brothers Tournament</h1>
+</head>
+<body>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="./character">Character</a></li>
+        <li><a href="/player">Player</a></li>
+        <li><a href="/tournament">Tournament</a></li>
+        <li><a href="/match">Match</a></li>
+    </ul>
+
+    <h1>Character</h1>
+    <p>Character page</p>
+
+    <div class="character">
+        <h2>Character 1</h2>
+        <p>Character 1 description</p>
+        <img src="https://www.ssbwiki.com/images/thumb/1/1c/Mario_SSBU.png/250px-Mario_SSBU.png" alt="character image">
+    </div>
+    
+    <div class="character">
+        <h2>Character 2</h2>
+        <p>Character 2 description</p>
+        <img src="https://www.ssbwiki.com/images/thumb/1/1c/Mario_SSBU.png/250px-Mario_SSBU.png" alt="character image">
+    </div>
+
+</body>
+
+    <h1>Character</h1>
+    <p>Character page</p>
+{% for character in characters %}
+    <div class="character">
+        <h2>{{ character.name }}</h2>
+        <p>{{ character.description }}</p>
+        <img src="{{ character.image }}" alt="character image">
+    </div>
+{% endfor %}
+```
+</html>

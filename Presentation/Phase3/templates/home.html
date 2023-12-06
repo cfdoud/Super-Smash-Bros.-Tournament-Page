@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Smash Brothers Tournament</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <h1 
+        style="
+        text-align: center,
+        font-size: 50px,
+        justify-content: center,
+        ;"
+        >Super Smash Brothers Tournament</h1>
+    
+    <ul>
+        <li><a href="/">Home</a></li> 
+        <li><a href="{{ url_for('character_page') }}">Character</a></li>
+        <li><a href="{{ url_for('register_page') }}">register</a></li>
+        <li><a href="/tournament">Tournament</a></li>
+        <li><a href="/match">Match</a></li>
+    </ul>
+
+</head>
+</html>
