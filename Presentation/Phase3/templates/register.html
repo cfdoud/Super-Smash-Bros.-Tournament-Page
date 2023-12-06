@@ -5,7 +5,7 @@ name, sponsor, country, controller type (gamecube, pro controller, joycon, etc),
 <html>
 <head>
     <title>Super Smash Brothers Tournament</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <!--<link rel="stylesheet" type="text/css" href="style.css"> -->
     <h1 
         style="
         text-align: center,
@@ -21,7 +21,24 @@ name, sponsor, country, controller type (gamecube, pro controller, joycon, etc),
         <li><a href="/tournament">Tournament</a></li>
         <li><a href="/match">Match</a></li>
     </ul>
-
+    <h1>Register</h1>
+    <p>Register page</p>
+    <form action="{{ url_for('register_page') }}" method="POST, GET">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" required>
+        <label for="sponsor">Sponsor</label>
+        <input type="text" name="sponsor" id="sponsor" required>
+        <label for="country">Country</label>
+        <input type="text" name="country" id="country" required>
+        <label for="controller">Controller</label>
+        <input type="text" name="controller" id="controller" required>
+        <label for="main">Main</label>
+        <input type="text" name="main" id="main" required>
+        <label for="secondary">Secondary</label>
+        <input type="text" name="secondary" id="secondary" required>
+        <label for="tertiary">Tertiary</label>
+        <input type="text" name="tertiary" id="tertiary" required>
+        <input type="submit" value="Submit">
 </head>
 
 </html>
