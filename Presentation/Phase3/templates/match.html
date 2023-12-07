@@ -37,6 +37,7 @@
             <th>Stage</th>
             <th>Player 1</th>
             <th>Player 2</th>
+            <th>Winner</th>
         </tr>
         {% set prev_match_id = None %}
         {% for match in matches %}
@@ -47,6 +48,7 @@
                     <td>{{ match[2] }}</td>
                     <td>{{ match[3] }}</td>
                     <td>{{ match[4] }}</td>
+                    <td>{{ match[5] }}</td>
                 </tr>
             {% else %}
                 <!-- Display Player 2 on the same line for the same match -->
