@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Super Smash Brothers Tournament</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <h1 style="text-align: center; font-size: 50px; justify-content: center;">Super Smash Brothers Tournament</h1>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="{{ url_for('character_page') }}">Character</a></li>
+        <li><a href="{{ url_for('register_page') }}">Register</a></li>
+        <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
+        <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
+        <li><a href="{{ url_for('match_page') }}">Match</a></li>
+    </ul>
+
+    <h1>Matches for Tournament</h1>
+    
+    <ul>
+        <!-- Display all tournaments as links -->
+        {% for tournament in tournaments %}
+        <li><a href="{{ url_for('match_page', event_id=tournament[1]) }}">{{ tournament[0] }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <form method="get" action="{{ url_for('match_page') }}">
+        <label for="tournament_name">Tournament Name:</label>
+        <input type="text" id="tournament_name" name="tournament_name">
+        <button type="submit">Search</button>
+    </form>
+
+    <!-- Table for displaying matches -->
+    <table>
+        <tr style="text-align: center; font-size: 20px">
+            <th>Match ID</th>
+            <th>Stage</th>
+            <th>Player 1</th>
+            <th>Player 2</th>
+        </tr>
+        {% set prev_match_id = None %}
+        {% for match in matches %}
+            {% if match[0] != prev_match_id %}
+                <!-- Start a new row for a new match -->
+                <tr>
+                    <td>{{ match[0] }}</td>
+                    <td>{{ match[2] }}</td>
+                    <td>{{ match[3] }}</td>
+                    <td>{{ match[4] }}</td>
+                </tr>
+            {% else %}
+                <!-- Display Player 2 on the same line for the same match -->
+                <td></td> <!-- empty cell for Match ID -->
+                <td></td> <!-- empty cell for Stage -->
+                <td></td> <!-- empty cell for Player 1 -->
+                <td>{{ match[4] }}</td> <!-- Player 2 -->
+            {% endif %}
+            {% set prev_match_id = match[0] %}
+        {% endfor %}
+    </table>
+</head>
+
+</html>

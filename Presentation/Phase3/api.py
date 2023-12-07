@@ -218,6 +218,52 @@ def tournament_page():
     print("Tournament matches:", tournament_matches)
 
     return render_template('tournament.html', tournaments=tournaments, match_counts=match_counts, tournament_matches=tournament_matches)
+@app.route('/match')
+def match_page():
+    conn = openConnection("./ssb.db")
+    cur = conn.cursor()
+
+    # Fetch tournaments with eventID
+    cur.execute("""
+        SELECT tournament.t_name, tournament.eventID
+        FROM tournament
+    """)
+    tournaments = cur.fetchall()
+
+    # Get the selected tournament's eventID from the URL parameter
+    selected_event_id = request.args.get('event_id')
+
+    # Fetch matches based on the selected tournament
+    cur.execute("""
+        SELECT shoubu.matchID, shoubu.eventID, stage.s_name, player.p_name
+        FROM shoubu
+        JOIN tournament ON shoubu.eventID = tournament.eventID
+        JOIN stage ON shoubu.stageID = stage.stageID
+        JOIN playerMatch ON shoubu.matchID = playerMatch.matchID
+        JOIN player ON playerMatch.playerID = player.playerID
+        WHERE shoubu.eventID = ?
+    """, (selected_event_id,))
+
+    matches = cur.fetchall()
+
+    conn.close()
+
+    return render_template('match.html', tournaments=tournaments, matches=matches)
+
+@app.route('/tournament_matches/<int:event_id>')
+def tournament_matches(event_id):
+    conn = openConnection("./ssb.db")
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT matchID, player1, player2, result
+        FROM shoubu
+        WHERE eventID = ?
+    """, (event_id,))
+    matches = cur.fetchall()
+    conn.close()
+
+    return render_template('matches_for_tournament.html', matches=matches)
+
 
 @app.route('/delete_player', methods=['POST'])
 def delete_player():
