@@ -218,6 +218,7 @@ def tournament_page():
     print("Tournament matches:", tournament_matches)
 
     return render_template('tournament.html', tournaments=tournaments, match_counts=match_counts, tournament_matches=tournament_matches)
+
 @app.route('/match')
 def match_page():
     conn = openConnection("./ssb.db")
@@ -234,15 +235,29 @@ def match_page():
     selected_event_id = request.args.get('event_id')
 
     # Fetch matches based on the selected tournament
+    #cur.execute("""
+    #    SELECT shoubu.matchID, shoubu.eventID, stage.s_name, player.p_name
+    #    FROM shoubu
+    #    JOIN tournament ON shoubu.eventID = tournament.eventID
+    #    JOIN stage ON shoubu.stageID = stage.stageID
+    #    JOIN playerMatch ON shoubu.matchID = playerMatch.matchID
+    #    JOIN player ON playerMatch.playerID = player.playerID
+    #    WHERE shoubu.eventID = ?
+    #""", (selected_event_id,))
+
     cur.execute("""
-        SELECT shoubu.matchID, shoubu.eventID, stage.s_name, player.p_name
-        FROM shoubu
-        JOIN tournament ON shoubu.eventID = tournament.eventID
-        JOIN stage ON shoubu.stageID = stage.stageID
-        JOIN playerMatch ON shoubu.matchID = playerMatch.matchID
-        JOIN player ON playerMatch.playerID = player.playerID
-        WHERE shoubu.eventID = ?
-    """, (selected_event_id,))
+            select s.matchID, s.eventID, st.s_name, P1.p_name, P2.p_name, s.result
+            from player P1, player P2, shoubu s, playerMatch pm1, playerMatch pm2, stage st 
+            where P1.playerID = pm1.playerID 
+            and P2.playerID = pm2.playerID 
+            and pm1.matchID = pm2.matchID 
+            and pm1.playerID <> pm2.playerID 
+            and pm1.matchID = s.matchID 
+            and P1.playerID < P2.playerID
+            and st.stageID = s.stageID
+            and s.eventID = ?
+            order by s.matchID asc
+        """, (selected_event_id,))
 
     matches = cur.fetchall()
 
