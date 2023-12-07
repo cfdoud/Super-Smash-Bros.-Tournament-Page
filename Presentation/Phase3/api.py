@@ -5,6 +5,8 @@ import sqlite3
 from sqlite3 import Error
 
 app = Flask(__name__)
+app.secret_key = 'supersmashbros'
+
 
 @app.route('/')
 def home():
@@ -39,28 +41,51 @@ def character_page():
     return render_template('character.html', characters=characters)
 
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register_page():
-    return render_template('register.html')
-def register_page():
-    if request.method == 'POST, GET':
-
+    if request.method == 'POST':
         name = request.form['name']
         sponsor = request.form['sponsor']
-        country = request.form['country']
+        country_name = request.form['country']
         controller = request.form['controller']
         main = request.form['main']
         rank = request.form['rank']
+
         conn = openConnection("./ssb.db")
         cur = conn.cursor()
-        cur.execute("""INSERT INTO player (player_name, sponsor, countryID, controllertype) VALUES (?, ?, ?, ?, ?)""", (name, sponsor, rank, country, controller))
-        cur.execute("""INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)""", (name, main))
-        conn.commit()   
-        conn.close()
-        flash("You have been registered!")
-        return redirect(url_for('home', name=name))
+
+        # Fetch the country ID based on the selected country name
+        cur.execute("SELECT countryID FROM country WHERE c_name = ?", (country_name,))
+        result = cur.fetchone()
+
+        if result:
+            country_id = result[0]
+
+            # Insert data into the player table
+            cur.execute("""
+                INSERT INTO player (p_name, sponsor, countryID, ctrltype, rank)
+                VALUES (?, ?, ?, ?, ?)
+            """, (name, sponsor, country_id, controller, rank))
+
+            # Insert data into the playerCharacter table
+            cur.execute("INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)", (name, main))
+
+            # Commit the changes to the database
+            conn.commit()
+
+            # Close the database connection
+            conn.close()
+
+            flash("You have been registered!")
+            return redirect(url_for('register_page', name=name))
+        else:
+            flash("Invalid country name. Please select a valid country.")
+            return redirect(url_for('register_page'))
+
     else:
-        return render_template('register.html', name=name)
+        # Handle the GET request, render the registration form
+        return render_template('register.html')
+
     
 @app.route('/tournament')
 def tournament_page():
