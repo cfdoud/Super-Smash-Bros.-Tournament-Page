@@ -14,7 +14,11 @@ def home():
 def roster_page():
     conn = openConnection("./ssb.db")
     cur = conn.cursor()
-    cur.execute("SELECT * FROM player")
+    cur.execute("""
+                SELECT p_name, sponsor, ctrltype, c_name
+                FROM player
+                JOIN country ON player.countryID = country.countryID
+                """)
     players = cur.fetchall()
     conn.close()
     return render_template('roster.html', players=players)
