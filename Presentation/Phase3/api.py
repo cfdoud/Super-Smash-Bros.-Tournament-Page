@@ -26,7 +26,18 @@ def roster_page():
 
 @app.route('/character')
 def character_page():
-    return render_template('character.html')
+    conn = openConnection("./ssb.db")
+    cur = conn.cursor()
+    cur.execute("""
+                SELECT * FROM character
+                """)
+    characters = cur.fetchall()
+    conn.close()
+    
+    print("Fetched characters:", characters)  # Add this line for debugging
+    
+    return render_template('character.html', characters=characters)
+
 
 @app.route('/register')
 def register_page():
@@ -39,22 +50,29 @@ def register_page():
         country = request.form['country']
         controller = request.form['controller']
         main = request.form['main']
-        secondary = request.form['secondary']
-        tertiary = request.form['tertiary']
+        rank = request.form['rank']
         conn = openConnection("./ssb.db")
         cur = conn.cursor()
-        cur.execute("INSERT INTO player (player_name, sponsor, countryID, controllertype) VALUES (?, ?, ?, ?)", (name, sponsor, country, controller))
-        cur.execute("INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)", (name, main))
-        cur.execute("INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)", (name, secondary))
-        cur.execute("INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)", (name, tertiary))
+        cur.execute("""INSERT INTO player (player_name, sponsor, countryID, controllertype) VALUES (?, ?, ?, ?, ?)""", (name, sponsor, rank, country, controller))
+        cur.execute("""INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)""", (name, main))
         conn.commit()   
         conn.close()
         flash("You have been registered!")
-        return redirect(url_for('home'))
+        return redirect(url_for('home', name=name))
     else:
-        return render_template('register.html')
+        return render_template('register.html', name=name)
     
-
+@app.route('/tournament')
+def tournament_page():
+    conn = openConnection("./ssb.db")
+    cur = conn.cursor()
+    cur.execute("""
+                SELECT t_name, year
+                FROM tournament
+                """)
+    tournaments = cur.fetchall()
+    conn.close()
+    return render_template('tournament.html' , tournaments=tournaments)
 
 def openConnection(_dbFile):
     """ create a database connection to the SQLite database

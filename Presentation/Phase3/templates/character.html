@@ -1,16 +1,86 @@
-This is the character page. It displays all the characters in the database. 
-
-```html
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Super Smash Brothers Tournament</title>
     <link rel="stylesheet" type="text/css" href="style.css">
-    <h1 
-        style="
-        text-align: center, font-size: 50px, justify-content: center;"
-        >Super Smash Brothers Tournament</h1>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            padding-top: 80px; /* Adjust the top padding to leave space for the navigation bar */
+        }
+    
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px; /* Add margin to the top of the character grid */
+        }
+    
+        .character {
+            position: relative;
+            width: 80%;
+            height: 100%;
+            padding-bottom: 60%; /* Adjust the aspect ratio as needed */
+            cursor: pointer;
+            border: 2px solid black; /* Add a black border */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .character .card {
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s;
+            transform-style: preserve-3d;
+            border: 2px solid black; /* Add a black border */
+        }
+    
+        .character .card:hover {
+            transform: rotateY(180deg);
+        }
+    
+        .character .card .front,
+        .character .card .back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+        }
+    
+        .character .card .back {
+            transform: rotateY(180deg);
+        }
+    
+        .character img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    
+        .character .card .front {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+    
+        .character .card .back .centered-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+    </style>
+    
+    
+    <h1 style="text-align: center; font-size: 50px; justify-content: center; padding-bottom: 300px;">Super Smash Brothers Tournament</h1>
 </head>
+
 <body>
     <ul>
         <li><a href="/">Home</a></li>
@@ -20,31 +90,25 @@ This is the character page. It displays all the characters in the database.
         <li><a href="/match">Match</a></li>
     </ul>
 
-    <h1>Character</h1>
-    <p>Character page</p>
-
-    <div class="character">
-        <h2>Character 1</h2>
-        <p>Character 1 description</p>
-        <img src="https://www.ssbwiki.com/images/thumb/1/1c/Mario_SSBU.png/250px-Mario_SSBU.png" alt="character image">
+    <div class="character-grid">
+        {% for character in characters %}
+        <div class="character">
+            <div class="card">
+                <div class="front">
+                    <img src="{{ url_for('static', filename='src/images/characters/' + character[1]|lower|replace(' ', '-') + '.png') }}" alt="{{ character[0] }}" style="width: 100px; height: auto;">
+                    <h2 style="margin-top: 10px; font-size: 16px;">{{ character[1] }}</h2>
+                </div>
+                <div class="back">
+                    <div class="centered-content">
+                        <h2 style="margin-top: 10px; font-size: 16px;">{{ character[2] }}</h2>
+                        <p>{{ character[3] }}</p>
+                    </div>
+                    <!-- Add more information here -->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    
-    <div class="character">
-        <h2>Character 2</h2>
-        <p>Character 2 description</p>
-        <img src="https://www.ssbwiki.com/images/thumb/1/1c/Mario_SSBU.png/250px-Mario_SSBU.png" alt="character image">
-    </div>
-
 </body>
 
-    <h1>Character</h1>
-    <p>Character page</p>
-{% for character in characters %}
-    <div class="character">
-        <h2>{{ character.name }}</h2>
-        <p>{{ character.description }}</p>
-        <img src="{{ character.image }}" alt="character image">
-    </div>
-{% endfor %}
-```
 </html>

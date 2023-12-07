@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Super Smash Brothers Tournament</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <h1
+        style="
+        text-align: center,
+        font-size: 50px,
+        justify-content: center,
+        ;"
+        >Super Smash Brothers Tournament</h1>
+
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="{{ url_for('character_page') }}">Character</a></li>
+        <li><a href="{{ url_for('register_page') }}">Player</a></li>
+        <li><a href="/tournament">Tournament</a></li>
+        <li><a href="/match">Match</a></li>
+    </ul>
+    <h1>Tournament</h1>
+    <p>Tournament page</p>
+    <button><a href="{{ url_for('tournament_page') }}">Refresh</a></button>
+    <table>
+    <tr style="text-align: center;, font-size: 20px" >
+        <th>Name</th>
+        <th>Year</th>
+    </tr>
+    {% for tournament in tournaments %}
+<tr>
+    <td>{{ tournament[0] }}</td>
+    <td>{{ tournament[1] }}</td>
+</tr>
+    {% endfor %}
+    </table>
+
+</head>
+</html>
+
