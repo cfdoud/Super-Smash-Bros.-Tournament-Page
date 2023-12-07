@@ -16,18 +16,17 @@
         <li><a href="{{ url_for('character_page') }}">Character</a></li>
         <li><a href="{{ url_for('register_page') }}">Register</a></li>
         <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
-        <li><a href="/tournament">Tournament</a></li>
-        <li><a href="/match">Match</a></li>
+        <li><a href="/tournament">Placements</a></li>
+        <li><a href="/match">Matches</a></li>
     </ul>
-    <h1>Tournament</h1>
-    <p>Tournament page</p>
+    <h1>Placements</h1>
+    <p>Placements page</p>
     <button><a href="{{ url_for('tournament_page') }}">Refresh</a></button>
 
     <table>
         <tr style="text-align: center; font-size: 20px">
             <th>Name</th>
             <th>Year</th>
-            <th>Match Count</th>
         </tr>
         {% for tournament in tournaments %}
         <tr>
@@ -39,10 +38,9 @@
                     <table>
                         <!-- Add columns for matches -->
                         <tr style="text-align: center; font-size: 18px">
-                            <th>Match ID</th>
-                            <th>Player 1</th> <!-- Add a new column for Players -->
-                            <th>Player 2</th>
-                            <th>Result</th>
+                            <th>Player</th>
+                            <th>Placement</th> <!-- Add a new column for Players -->
+                            <th>Winnings</th>
                             <!-- Add other match columns as needed -->
                         </tr>
                         <!-- Add match rows here -->
@@ -51,7 +49,6 @@
                                 <td>{{ match[0] }}</td>
                                 <td>{{ match[1] }}</td> <!-- Display player names -->
                                 <td>{{ match[2] }}</td>
-                                <td>{{ match[3] }}</td>
                                 <!-- Add other match columns as needed -->
                             </tr>
                         {% endfor %}
@@ -59,7 +56,6 @@
                 </div>
             </td>
             <td>{{ tournament[1] }}</td>
-            <td>{{ match_counts[tournament[2]] }}</td>
         </tr>
         
         {% endfor %}

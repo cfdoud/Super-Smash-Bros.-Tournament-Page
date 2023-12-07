@@ -11,22 +11,21 @@
         <li><a href="{{ url_for('character_page') }}">Character</a></li>
         <li><a href="{{ url_for('register_page') }}">Register</a></li>
         <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
-        <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
-        <li><a href="{{ url_for('match_page') }}">Match</a></li>
+        <li><a href="{{ url_for('tournament_page') }}">Placements</a></li>
+        <li><a href="{{ url_for('match_page') }}">Matches</a></li>
     </ul>
 
-    <h1>Matches for Tournament</h1>
+    <h1>Matches</h1>
     
-    <ul>
-        <!-- Display all tournaments as links -->
-        {% for tournament in tournaments %}
-        <li><a href="{{ url_for('match_page', event_id=tournament[1]) }}">{{ tournament[0] }}</a></li>
-        {% endfor %}
-    </ul>
-
     <form method="get" action="{{ url_for('match_page') }}">
-        <label for="tournament_name">Tournament Name:</label>
-        <input type="text" id="tournament_name" name="tournament_name">
+        <label for="event_id">Tournament Name:</label>
+        <!input type="text" id="tournament_name" name="tournament_name">
+        <select name="event_id" id="event_id" required>
+            <option selected disabled>---Select---</option>
+            {% for tournament in tournaments %}
+            <option value="{{ tournament[1] }}">{{ tournament[0] }}</option>
+            {% endfor %}
+        </select>
         <button type="submit">Search</button>
     </form>
 

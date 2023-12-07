@@ -174,7 +174,7 @@ def tournament_page():
 
     # Fetch match counts and player names for each tournament
     tournament_matches = {}
-    match_counts = {}
+    # match_counts = {}
     for tournament in tournaments:
         event_id = tournament[2]
 
@@ -188,36 +188,44 @@ def tournament_page():
         #    GROUP BY shoubu.matchID
         #""", (event_id,))
 
+        #cur.execute("""
+        #    select s.matchID, P1.p_name, P2.p_name, s.result 
+        #    from player P1, player P2, shoubu s, playerMatch pm1, playerMatch pm2 
+        #    where P1.playerID = pm1.playerID 
+        #    and P2.playerID = pm2.playerID 
+        #    and pm1.matchID = pm2.matchID 
+        #    and pm1.playerID <> pm2.playerID 
+        #    and pm1.matchID = s.matchID 
+        #    and P1.playerID < P2.playerID
+        #    and s.eventID = ?
+        #""", (event_id,))
+
         cur.execute("""
-            select s.matchID, P1.p_name, P2.p_name, s.result 
-            from player P1, player P2, shoubu s, playerMatch pm1, playerMatch pm2 
-            where P1.playerID = pm1.playerID 
-            and P2.playerID = pm2.playerID 
-            and pm1.matchID = pm2.matchID 
-            and pm1.playerID <> pm2.playerID 
-            and pm1.matchID = s.matchID 
-            and P1.playerID < P2.playerID
-            and s.eventID = ?
+            select p.p_name, pt.placement, pt.winnings 
+            from player p, playerTournament pt, tournament t 
+            where p.playerID = pt.playerID
+            and pt.eventID = t.eventID
+            and t.eventID = ?
         """, (event_id,))
         
         matches = cur.fetchall()
         tournament_matches[event_id] = matches
 
         # Fetch match count for each tournament
-        cur.execute("""
-            SELECT COUNT(DISTINCT matchID) FROM shoubu
-            WHERE eventID = ?
-        """, (event_id,))
-        match_count = cur.fetchone()[0]
-        match_counts[event_id] = match_count
+        # cur.execute("""
+        #    SELECT COUNT(DISTINCT matchID) FROM shoubu
+        #    WHERE eventID = ?
+        #""", (event_id,))
+        #match_count = cur.fetchone()[0]
+        #match_counts[event_id] = match_count
 
     conn.close()
 
     print("Fetched tournaments:", tournaments)
-    print("Match counts:", match_counts)
+    # print("Match counts:", match_counts)
     print("Tournament matches:", tournament_matches)
 
-    return render_template('tournament.html', tournaments=tournaments, match_counts=match_counts, tournament_matches=tournament_matches)
+    return render_template('tournament.html', tournaments=tournaments, tournament_matches=tournament_matches)
 
 @app.route('/match')
 def match_page():
@@ -265,19 +273,19 @@ def match_page():
 
     return render_template('match.html', tournaments=tournaments, matches=matches)
 
-@app.route('/tournament_matches/<int:event_id>')
-def tournament_matches(event_id):
-    conn = openConnection("./ssb.db")
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT matchID, player1, player2, result
-        FROM shoubu
-        WHERE eventID = ?
-    """, (event_id,))
-    matches = cur.fetchall()
-    conn.close()
+#@app.route('/tournament_matches/<int:event_id>')
+#def tournament_matches(event_id):
+#    conn = openConnection("./ssb.db")
+#    cur = conn.cursor()
+#    cur.execute("""
+#        SELECT matchID, player1, player2, result
+#        FROM shoubu
+#        WHERE eventID = ?
+#    """, (event_id,))
+#    matches = cur.fetchall()
+#    conn.close()
 
-    return render_template('matches_for_tournament.html', matches=matches)
+#    return render_template('matches_for_tournament.html', matches=matches)
 
 
 @app.route('/delete_player', methods=['POST'])
