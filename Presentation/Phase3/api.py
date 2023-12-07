@@ -14,13 +14,15 @@ def home():
 
 @app.route('/roster')
 def roster_page():
-    conn = openConnection("./ssb.db")
-    cur = conn.cursor()
-    cur.execute("""
-                SELECT p_name, sponsor, ctrltype, c_name
-                FROM player
-                JOIN country ON player.countryID = country.countryID
-                """)
+    if request.method == 'POST':
+        print("table has been successfully updated")
+        conn = openConnection("./ssb.db")
+        cur = conn.cursor()
+        cur.execute("""
+                    SELECT p_name, sponsor, ctrltype, c_name
+                    FROM player
+                    JOIN country ON player.countryID = country.countryID
+                    """)
     players = cur.fetchall()
     conn.close()
     return render_template('roster.html', players=players)
@@ -56,6 +58,7 @@ def register_page():
 
         # Fetch the country ID based on the selected country name
         cur.execute("SELECT countryID FROM country WHERE c_name = ?", (country_name,))
+        cur.execute("SELECT charID FROM character WHERE ch_name = ?", (main,))
         result = cur.fetchone()
 
         if result:
@@ -66,7 +69,6 @@ def register_page():
                 INSERT INTO player (p_name, sponsor, countryID, ctrltype, rank)
                 VALUES (?, ?, ?, ?, ?)
             """, (name, sponsor, country_id, controller, rank))
-
             # Insert data into the playerCharacter table
             cur.execute("INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)", (name, main))
 
