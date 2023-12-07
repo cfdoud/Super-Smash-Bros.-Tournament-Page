@@ -40,7 +40,9 @@
                         <!-- Add columns for matches -->
                         <tr style="text-align: center; font-size: 18px">
                             <th>Match ID</th>
-                            <th>Players</th> <!-- Add a new column for Players -->
+                            <th>Player 1</th> <!-- Add a new column for Players -->
+                            <th>Player 2</th>
+                            <th>Result</th>
                             <!-- Add other match columns as needed -->
                         </tr>
                         <!-- Add match rows here -->
@@ -48,6 +50,8 @@
                             <tr>
                                 <td>{{ match[0] }}</td>
                                 <td>{{ match[1] }}</td> <!-- Display player names -->
+                                <td>{{ match[2] }}</td>
+                                <td>{{ match[3] }}</td>
                                 <!-- Add other match columns as needed -->
                             </tr>
                         {% endfor %}
@@ -55,7 +59,11 @@
                 </div>
             </td>
             <td>{{ tournament[1] }}</td>
+<<<<<<< HEAD
             <td>{{ match_counts[tournament[2]]  }}</td>
+=======
+            <td>{{ match_counts[tournament[2]] }}</td>
+>>>>>>> 169f191675c20c5a46dfc69f7754461f642e787f
         </tr>
         
         {% endfor %}

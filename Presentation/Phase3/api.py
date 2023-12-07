@@ -179,13 +179,25 @@ def tournament_page():
         event_id = tournament[2]
 
         # Fetch match IDs and player names for each match in the tournament
+        #cur.execute("""
+        #    SELECT DISTINCT shoubu.matchID, GROUP_CONCAT(player.p_name, ', ')
+        #    FROM shoubu
+        #    JOIN playermatch ON shoubu.matchID = playermatch.matchID
+        #    JOIN player ON playermatch.playerID = player.playerID
+        #    WHERE shoubu.eventID = ?
+        #    GROUP BY shoubu.matchID
+        #""", (event_id,))
+
         cur.execute("""
-            SELECT DISTINCT shoubu.matchID, GROUP_CONCAT(player.p_name, ', ')
-            FROM shoubu
-            JOIN playermatch ON shoubu.matchID = playermatch.matchID
-            JOIN player ON playermatch.playerID = player.playerID
-            WHERE shoubu.eventID = ?
-            GROUP BY shoubu.matchID
+            select s.matchID, P1.p_name, P2.p_name, s.result 
+            from player P1, player P2, shoubu s, playerMatch pm1, playerMatch pm2 
+            where P1.playerID = pm1.playerID 
+            and P2.playerID = pm2.playerID 
+            and pm1.matchID = pm2.matchID 
+            and pm1.playerID <> pm2.playerID 
+            and pm1.matchID = s.matchID 
+            and P1.playerID < P2.playerID
+            and s.eventID = ?
         """, (event_id,))
         
         matches = cur.fetchall()
