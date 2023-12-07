@@ -23,18 +23,21 @@ name, sponsor, country, controller type (gamecube, pro controller, joycon, etc),
         <input type="text" name="name" id="name" required>
         <label for="sponsor">Sponsor</label>
         <input type="text" name="sponsor" id="sponsor" required>
-        <label for="rank">Rank</label>
-        <input type="text" name="rank" id="rank" required>
+        
         <label for="country">Country</label>
         <input type="text" name="country" id="country" required>
         <label for="controller">Controller</label>
         <input type="text" name="controller" id="controller" required>
-        <label for="main">Main</label>
-        <input type="text" name="main" id="main" required>
+        
+        <!-- Use a text input for the main character -->
+        <label for="main">Main Character</label>
+        <select name="main" id="main" required>
+            {% for character in characters %}
+            <option value="{{ character[0] }}">{{ character[0] }}</option>
+            {% endfor %}
+        </select>
+
         <input type="submit" value="Submit">
     </form>
-    
-   
-
 </head>
 </html>

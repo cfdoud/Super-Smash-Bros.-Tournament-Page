@@ -17,24 +17,27 @@ def home():
 def roster_page():
     conn = openConnection("./ssb.db")
     cur = conn.cursor()
+    
 
     # Get the search query from the request's args
     search_query = request.args.get('search')
-
+    
     if search_query:
         # If there is a search query, filter the players based on the name (case-insensitive)
         cur.execute("""
-            SELECT p_name, sponsor, ctrltype, c_name, rank
+            SELECT p_name, sponsor, ctrltype, c_name, character.ch_name
             FROM player
             JOIN country ON player.countryID = country.countryID
+            JOIN character ON player.charID = character.charID
             WHERE LOWER(p_name) LIKE LOWER(?)
         """, ('%' + search_query + '%',))
     else:
         # If no search query, fetch all players
         cur.execute("""
-            SELECT p_name, sponsor, ctrltype, c_name, rank
+            SELECT p_name, sponsor, ctrltype, c_name, character.ch_name
             FROM player
             JOIN country ON player.countryID = country.countryID
+            JOIN character ON player.charID = character.charID
         """)
 
     players = cur.fetchall()
@@ -65,7 +68,6 @@ def register_page():
         country_name = request.form['country']
         controller = request.form['controller']
         main = request.form['main']
-        rank = request.form['rank']
 
         conn = openConnection("./ssb.db")
         cur = conn.cursor()
@@ -77,29 +79,44 @@ def register_page():
         if result:
             country_id = result[0]
 
-            # Insert data into the player table
-            cur.execute("""
-                INSERT INTO player (p_name, sponsor, countryID, ctrltype, rank)
-                VALUES (?, ?, ?, ?, ?)
-            """, (name, sponsor, country_id, controller, rank))
-            # Insert data into the playerCharacter table
-            cur.execute("INSERT INTO playerCharacter (playerID, charID) VALUES (?, ?)", (name, main))
+            # Fetch the character ID based on the selected main character name
+            cur.execute("SELECT charID FROM character WHERE ch_name = ?", (main,))
+            character_result = cur.fetchone()
 
-            # Commit the changes to the database
-            conn.commit()
+            if character_result:
+                character_id = character_result[0]
 
-            # Close the database connection
-            conn.close()
+                # Insert data into the player table
+                cur.execute("""
+                    INSERT INTO player (p_name, sponsor, countryID, ctrltype, charID)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (name, sponsor, country_id, controller, character_id))
 
-            flash("You have been registered!")
-            return redirect(url_for('register_page', name=name))
+                # Commit the changes to the database
+                conn.commit()
+
+                # Close the database connection
+                conn.close()
+
+                flash("You have been registered!")
+                return redirect(url_for('register_page', name=name))
+            else:
+                flash("Invalid main character name. Please select a valid character.")
+                return redirect(url_for('register_page'))
         else:
             flash("Invalid country name. Please select a valid country.")
             return redirect(url_for('register_page'))
 
     else:
         # Handle the GET request, render the registration form
-        return render_template('register.html')
+        # Fetch the list of characters from the database
+        conn = openConnection("./ssb.db")
+        cur = conn.cursor()
+        cur.execute("SELECT ch_name FROM character")
+        characters = cur.fetchall()
+        conn.close()
+
+        return render_template('register.html', characters=characters)
 
     
 @app.route('/tournament')
