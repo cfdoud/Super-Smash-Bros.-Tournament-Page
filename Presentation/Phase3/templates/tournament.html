@@ -30,25 +30,34 @@
             <th>Match Count</th>
         </tr>
         {% for tournament in tournaments %}
-            <tr>
-                <td>
-                    <a href="#" onclick="toggleMatches('{{ tournament[0] }}')">
-                        {{ tournament[0] }}
-                    </a>
-                    <div id="{{ tournament[0] }}_matches" style="display: none;">
-                        <table>
-                            <!-- Add columns for matches -->
-                            <tr style="text-align: center; font-size: 18px">
-                                <th>Match ID</th>
+        <tr>
+            <td>
+                <a href="#" onclick="toggleMatches('{{ tournament[0] }}')">
+                    {{ tournament[0] }}
+                </a>
+                <div id="{{ tournament[0] }}_matches" style="display: none;">
+                    <table>
+                        <!-- Add columns for matches -->
+                        <tr style="text-align: center; font-size: 18px">
+                            <th>Match ID</th>
+                            <th>Players</th> <!-- Add a new column for Players -->
+                            <!-- Add other match columns as needed -->
+                        </tr>
+                        <!-- Add match rows here -->
+                        {% for match in tournament_matches[tournament[2]] %}
+                            <tr>
+                                <td>{{ match[0] }}</td>
+                                <td>{{ match[1] }}</td> <!-- Display player names -->
                                 <!-- Add other match columns as needed -->
                             </tr>
-                            <!-- Add match rows here -->
-                        </table>
-                    </div>
-                </td>
-                <td>{{ tournament[1] }}</td>
-                <td>{{ match_counts[tournament[2]] //2 }}</td>
-            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </td>
+            <td>{{ tournament[1] }}</td>
+            <td>{{ match_counts[tournament[2]] // 2 }}</td>
+        </tr>
+        
         {% endfor %}
     </table>
     

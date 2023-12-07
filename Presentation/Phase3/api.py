@@ -131,10 +131,26 @@ def tournament_page():
     """)
     tournaments = cur.fetchall()
 
-    # Fetch match counts for each tournament
+    # Fetch match counts and player names for each tournament
+    tournament_matches = {}
     match_counts = {}
     for tournament in tournaments:
         event_id = tournament[2]
+
+        # Fetch match IDs and player names for each match in the tournament
+        cur.execute("""
+            SELECT DISTINCT shoubu.matchID, GROUP_CONCAT(player.p_name, ', ')
+            FROM shoubu
+            JOIN playermatch ON shoubu.matchID = playermatch.matchID
+            JOIN player ON playermatch.playerID = player.playerID
+            WHERE shoubu.eventID = ?
+            GROUP BY shoubu.matchID
+        """, (event_id,))
+        
+        matches = cur.fetchall()
+        tournament_matches[event_id] = matches
+
+        # Fetch match count for each tournament
         cur.execute("""
             SELECT COUNT(DISTINCT matchID) FROM shoubu
             WHERE eventID = ?
@@ -146,8 +162,9 @@ def tournament_page():
 
     print("Fetched tournaments:", tournaments)
     print("Match counts:", match_counts)
+    print("Tournament matches:", tournament_matches)
 
-    return render_template('tournament.html', tournaments=tournaments, match_counts=match_counts)
+    return render_template('tournament.html', tournaments=tournaments, match_counts=match_counts, tournament_matches=tournament_matches)
 
 @app.route('/delete_player', methods=['POST'])
 def delete_player():
