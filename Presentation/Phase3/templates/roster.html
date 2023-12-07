@@ -1,54 +1,57 @@
-<!--      -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Super Smash Brothers Tournament</title>
-    <!--<link rel="stylesheet" type="text/css" href="style.css"> -->
-    <h1 
-        style="
-        text-align: center,
-        font-size: 50px,
-        justify-content: center,
-        ;"
-        >Super Smash Brothers Tournament</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roster Search</title>
+    <!-- Add any additional styling or scripts here -->
+</head>
+<body>
     
-        <ul>
-            <li><a href="/">Home</a></li> 
-            <li><a href="{{ url_for('character_page') }}">Character</a></li>
-            <li><a href="{{ url_for('register_page') }}">Register</a></li>
-            <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
-            <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
-            <li><a href="/match">Match</a></li>
-        </ul>
-    <h1>Roster</h1>
-    <p>Roster page</p>
-
-    <form method="get" action="{{ url_for('roster_page') }}">
-        <button type="submit">Update</button>
+    <h1>Roster Search</h1>
+    <ul>
+        <li><a href="/">Home</a></li> 
+        <li><a href="{{ url_for('character_page') }}">Character</a></li>
+        <li><a href="{{ url_for('register_page') }}">Register</a></li>
+        <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
+        <li><a href="/match">Match</a></li>
+    </ul>
+    <form method="get" action="{{ url_for('roster_search') }}">
+        <label for="search">Search by Name:</label>
+        <input type="text" name="search" id="search" value="{{ search_query }}">
+        <button type="submit">Search</button>
     </form>
-    <table>
+
+    <h2>Search Results</h2>
+    
+<table>
     <tr style="text-align: center; font-size: 20px" >
         <th>Name</th>
         <th>Sponsor</th>
         <th>Country</th>
         <th>Controller</th>
+        <th>Rank</th>
         <th>Main</th>
+
     </tr>
-    {% for player in players %}
-<tr>
-    <td>{{ player[0] }}</td>
-    <td>{{ player[1] }}</td>
-    <td>{{ player[3] }}</td>
-    <td>{{ player[2] }}</td>
+    {% if players %}
+        {% for player in players %}
+            <tr style="text-align: center; font-size: 18px">
+                <td>{{ player[0] }}</td>
+                <td>{{ player[1] }}</td>
+                <td>{{ player[3] }}</td>
+                <td>{{ player[2] }}</td>
+                <td>{{ player[4] }}</td>
+                <td>{{ player[5] }}</td>
+                <!-- Add other fields as needed -->
+            </tr>
+        {% endfor %}
+    {% else %}
+        <tr>
+            <td colspan="5">No matching players found.</td>
+        </tr>
+    {% endif %}
+</table>
 
-    <!-- Add other fields as needed -->
-</tr>
-{% endfor %}
-    </table>
-
-  
-
-</head>
-
-    
+</body>
 </html>

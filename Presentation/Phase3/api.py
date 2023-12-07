@@ -12,22 +12,35 @@ app.secret_key = 'supersmashbros'
 def home():
     return render_template('home.html')
 
-@app.route('/roster', methods=['GET', 'POST'])
-def roster_page():
-    if request.method == 'GET':
-        conn = openConnection("./ssb.db")
-        cur = conn.cursor()
-        cur.execute("""
-                    SELECT p_name, sponsor, ctrltype, c_name
-                    FROM player
-                    JOIN country ON player.countryID = country.countryID
-                    """)
-        players = cur.fetchall()
-        conn.close()
 
-        return render_template('roster.html', players=players)
+@app.route('/roster', methods=['GET', 'POST'])
+def roster_search():
+    conn = openConnection("./ssb.db")
+    cur = conn.cursor()
+
+    # Get the search query from the request's args
+    search_query = request.args.get('search')
+
+    if search_query:
+        # If there is a search query, filter the players based on the name (case-insensitive)
+        cur.execute("""
+            SELECT p_name, sponsor, ctrltype, c_name, rank
+            FROM player
+            JOIN country ON player.countryID = country.countryID
+            WHERE LOWER(p_name) LIKE LOWER(?)
+        """, ('%' + search_query + '%',))
     else:
-        return render_template('roster.html')
+        # If no search query, fetch all players
+        cur.execute("""
+            SELECT p_name, sponsor, ctrltype, c_name, rank
+            FROM player
+            JOIN country ON player.countryID = country.countryID
+        """)
+
+    players = cur.fetchall()
+    conn.close()
+
+    return render_template('roster.html', players=players, search_query=search_query)
 
 @app.route('/character')
 def character_page():
