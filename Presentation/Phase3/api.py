@@ -50,13 +50,54 @@ def character_page():
     conn = openConnection("./ssb.db")
     cur = conn.cursor()
     cur.execute("""
-                SELECT * FROM character
+                SELECT ch_name, series, description
+
+                FROM character
+                
                 """)
     characters = cur.fetchall()
     conn.close()
+
+    for character in characters:
+        print("Character: reg")
+        image_url = url_for('static', filename='src/images/characters/' + str(character[1]).lower().replace(' ', '-') + '.png')
+        print("Image URL:", image_url)
     
     print("Fetched characters:", characters)  # Add this line for debugging
     
+    return render_template('character.html', characters=characters)
+
+@app.route('/top_characters', methods=['GET'])
+def top_characters():
+    conn = openConnection("./ssb.db")
+    cur = conn.cursor()
+
+    # Get the selected value from the form
+    top_value = request.args.get('top')
+
+    # Use the selected value to determine the LIMIT in the SQL query
+    if top_value == 'ALL':
+        return redirect(url_for('character_page'))
+    else:
+        limit_clause = 'LIMIT ' + str(top_value)
+
+    cur.execute(f"""
+        SELECT character.ch_name, COUNT(*) AS count
+        FROM player
+        JOIN character ON player.charID = character.charID
+        GROUP BY character.ch_name
+        ORDER BY count DESC
+        {limit_clause}
+    """)
+
+    characters = cur.fetchall()
+    conn.close()
+
+    for character in characters:
+        print("Character: TOP")
+        image_url = url_for('static', filename='src/images/characters/' + str(character[0]).lower().replace(' ', '-') + '.png')
+        print("Image URL:", image_url)
+
     return render_template('character.html', characters=characters)
 
 
@@ -199,6 +240,7 @@ def delete_player():
 
     return redirect(url_for('roster_page'))
     
+
 
 def openConnection(_dbFile):
     """ create a database connection to the SQLite database

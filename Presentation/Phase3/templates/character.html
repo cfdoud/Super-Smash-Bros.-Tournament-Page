@@ -89,19 +89,32 @@
         <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
         <li><a href="/match">Match</a></li>
     </ul>
+    <div>
+        <form action="{{ url_for('top_characters') }}" method="GET">
+            <label for="top">Top</label>
+            <select name="top" id="top">
+                <option value="ALL">ALL</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
+            </select>
+            <input type="submit" value="Submit">
+        </form>
 
+    </div>
     <div class="character-grid">
         {% for character in characters %}
         <div class="character">
             <div class="card">
                 <div class="front">
-                    <img src="{{ url_for('static', filename='src/images/characters/' + character[1]|lower|replace(' ', '-') + '.png') }}" alt="{{ character[0] }}" style="width: 100px; height: auto;">
-                    <h2 style="margin-top: 10px; font-size: 16px;">{{ character[1] }}</h2>
+                    {% set image_url = url_for('static', filename='src/images/characters/' + character[0]|lower|replace(' ', '-') + '.png') %}
+                    <img src="{{ image_url }}" alt="{{ character[1] }}" style="width: 100px; height: auto;">
+                    <h2 style="margin-top: 10px; font-size: 16px;">{{ character[0] }}</h2>
                 </div>
                 <div class="back">
                     <div class="centered-content">
-                        <h2 style="margin-top: 10px; font-size: 16px;">{{ character[2] }}</h2>
-                        <p>{{ character[3] }}</p>
+                        <h2 style="margin-top: 10px; font-size: 16px;">{{ character[1] }}</h2>
+                        <p>{{ character[2] }}</p>
                     </div>
                     <!-- Add more information here -->
                 </div>
