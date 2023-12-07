@@ -16,7 +16,7 @@
         <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
         <li><a href="/match">Match</a></li>
     </ul>
-    <form method="get" action="{{ url_for('roster_search') }}">
+    <form method="get" action="{{ url_for('roster_page') }}">
         <label for="search">Search by Name:</label>
         <input type="text" name="search" id="search" value="{{ search_query }}">
         <button type="submit">Search</button>
@@ -42,7 +42,7 @@
                 <td>{{ player[3] }}</td>
                 <td>{{ player[2] }}</td>
                 <td>{{ player[4] }}</td>
-                <td>{{ player[5] }}</td>
+                
                 <!-- Add other fields as needed -->
             </tr>
         {% endfor %}

@@ -14,7 +14,7 @@ def home():
 
 
 @app.route('/roster', methods=['GET', 'POST'])
-def roster_search():
+def roster_page():
     conn = openConnection("./ssb.db")
     cur = conn.cursor()
 
