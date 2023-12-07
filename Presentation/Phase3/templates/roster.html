@@ -44,6 +44,13 @@
                 <td>{{ player[4] }}</td>
                 
                 <!-- Add other fields as needed -->
+
+                <td>
+                    <form method="post" action="{{ url_for('delete_player') }}">
+                        <input type="hidden" name="player_id" value="{{ player[0] }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
     {% else %}

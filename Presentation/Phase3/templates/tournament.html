@@ -5,35 +5,60 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <h1
         style="
-        text-align: center,
-        font-size: 50px,
-        justify-content: center,
-        ;"
-        >Super Smash Brothers Tournament</h1>
+        text-align: center;
+        font-size: 50px;
+        justify-content: center;
+        "
+    >Super Smash Brothers Tournament</h1>
 
     <ul>
         <li><a href="/">Home</a></li>
         <li><a href="{{ url_for('character_page') }}">Character</a></li>
-        <li><a href="{{ url_for('register_page') }}">Player</a></li>
+        <li><a href="{{ url_for('register_page') }}">Register</a></li>
+        <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
         <li><a href="/tournament">Tournament</a></li>
         <li><a href="/match">Match</a></li>
     </ul>
     <h1>Tournament</h1>
     <p>Tournament page</p>
     <button><a href="{{ url_for('tournament_page') }}">Refresh</a></button>
-    <table>
-    <tr style="text-align: center;, font-size: 20px" >
-        <th>Name</th>
-        <th>Year</th>
-    </tr>
-    {% for tournament in tournaments %}
-<tr>
-    <td>{{ tournament[0] }}</td>
-    <td>{{ tournament[1] }}</td>
-</tr>
-    {% endfor %}
-    </table>
 
+    <table>
+        <tr style="text-align: center; font-size: 20px">
+            <th>Name</th>
+            <th>Year</th>
+            <th>Match Count</th>
+        </tr>
+        {% for tournament in tournaments %}
+            <tr>
+                <td>
+                    <a href="#" onclick="toggleMatches('{{ tournament[0] }}')">
+                        {{ tournament[0] }}
+                    </a>
+                    <div id="{{ tournament[0] }}_matches" style="display: none;">
+                        <table>
+                            <!-- Add columns for matches -->
+                            <tr style="text-align: center; font-size: 18px">
+                                <th>Match ID</th>
+                                <!-- Add other match columns as needed -->
+                            </tr>
+                            <!-- Add match rows here -->
+                        </table>
+                    </div>
+                </td>
+                <td>{{ tournament[1] }}</td>
+                <td>{{ match_counts[tournament[2]] //2 }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+    <!-- ... (remaining HTML code) ... -->
+    
+    <script>
+        function toggleMatches(tournamentName) {
+            var matchesTable = document.getElementById(tournamentName + "_matches");
+            matchesTable.style.display = (matchesTable.style.display === 'none') ? 'block' : 'none';
+        }
+    </script>
 </head>
 </html>
-

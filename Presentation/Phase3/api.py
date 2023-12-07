@@ -106,13 +106,65 @@ def register_page():
 def tournament_page():
     conn = openConnection("./ssb.db")
     cur = conn.cursor()
+
+    # Fetch tournament names and years
     cur.execute("""
-                SELECT t_name, year
-                FROM tournament
-                """)
+        SELECT t_name, year, eventID
+        FROM tournament
+    """)
     tournaments = cur.fetchall()
+
+    # Fetch match counts for each tournament
+    match_counts = {}
+    for tournament in tournaments:
+        event_id = tournament[2]
+        cur.execute("""
+            SELECT COUNT(DISTINCT matchID) FROM shoubu
+            WHERE eventID = ?
+        """, (event_id,))
+        match_count = cur.fetchone()[0]
+        match_counts[event_id] = match_count
+
     conn.close()
-    return render_template('tournament.html' , tournaments=tournaments)
+
+    print("Fetched tournaments:", tournaments)
+    print("Match counts:", match_counts)
+
+    return render_template('tournament.html', tournaments=tournaments, match_counts=match_counts)
+
+@app.route('/delete_player', methods=['POST'])
+def delete_player():
+    if request.method == 'POST':
+        player_id = request.form.get('player_id')  # Assuming you have a form field named 'player_id'
+        if player_id:
+            conn = openConnection("./ssb.db")
+            cur = conn.cursor()
+
+            try:
+                # Print the SQL query to debug
+                sql_query = "DELETE FROM player WHERE p_name = ?"
+                print("SQL Query:", sql_query, "Parameters:", (player_id,))
+                
+                # Delete the player from the player table
+                cur.execute(sql_query, (player_id,))
+
+                # Commit the changes to the database
+                conn.commit()
+
+                # Close the database connection
+                conn.close()
+                print("Player deleted successfully!")
+                flash("Player deleted successfully!")
+            except Exception as e:
+                print("Error:", str(e))
+                flash("An error occurred while deleting the player.")
+        else:
+            flash("Invalid player ID. Please enter a valid player ID.")
+    else:
+        flash("Invalid request. Please enter a player ID.")
+
+    return redirect(url_for('roster_page'))
+    
 
 def openConnection(_dbFile):
     """ create a database connection to the SQLite database
