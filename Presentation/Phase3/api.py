@@ -12,10 +12,9 @@ app.secret_key = 'supersmashbros'
 def home():
     return render_template('home.html')
 
-@app.route('/roster')
+@app.route('/roster', methods=['GET', 'POST'])
 def roster_page():
-    if request.method == 'POST':
-        print("table has been successfully updated")
+    if request.method == 'GET':
         conn = openConnection("./ssb.db")
         cur = conn.cursor()
         cur.execute("""
@@ -23,10 +22,12 @@ def roster_page():
                     FROM player
                     JOIN country ON player.countryID = country.countryID
                     """)
-    players = cur.fetchall()
-    conn.close()
-    return render_template('roster.html', players=players)
+        players = cur.fetchall()
+        conn.close()
 
+        return render_template('roster.html', players=players)
+    else:
+        return render_template('roster.html')
 
 @app.route('/character')
 def character_page():
@@ -58,7 +59,6 @@ def register_page():
 
         # Fetch the country ID based on the selected country name
         cur.execute("SELECT countryID FROM country WHERE c_name = ?", (country_name,))
-        cur.execute("SELECT charID FROM character WHERE ch_name = ?", (main,))
         result = cur.fetchone()
 
         if result:

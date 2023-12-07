@@ -12,25 +12,27 @@
         ;"
         >Super Smash Brothers Tournament</h1>
     
-    <ul>
-        <li><a href="/">Home</a></li> 
-        <li><a href="{{ url_for('character_page') }}">Character</a></li>
-        <li><a href="{{ url_for('register_page') }}">Player</a></li>
-        <li><a href="/tournament">Tournament</a></li>
-        <li><a href="/match">Match</a></li>
-    </ul>
+        <ul>
+            <li><a href="/">Home</a></li> 
+            <li><a href="{{ url_for('character_page') }}">Character</a></li>
+            <li><a href="{{ url_for('register_page') }}">Register</a></li>
+            <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
+            <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
+            <li><a href="/match">Match</a></li>
+        </ul>
     <h1>Roster</h1>
     <p>Roster page</p>
-    <button><a href="{{ url_for('roster_page') }}">Update</a></button>
+
+    <form method="get" action="{{ url_for('roster_page') }}">
+        <button type="submit">Update</button>
+    </form>
     <table>
-    <tr style="text-align: center;, font-size: 20px" >
+    <tr style="text-align: center; font-size: 20px" >
         <th>Name</th>
         <th>Sponsor</th>
         <th>Country</th>
         <th>Controller</th>
         <th>Main</th>
-        <th>Secondary</th>
-        <th>Tertiary</th>
     </tr>
     {% for player in players %}
 <tr>
