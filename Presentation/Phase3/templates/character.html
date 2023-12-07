@@ -83,10 +83,10 @@
 
 <body>
     <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="./character">Character</a></li>
-        <li><a href="/player">Player</a></li>
-        <li><a href="/tournament">Tournament</a></li>
+        <li><a href="/">Home</a></li> 
+        <li><a href="{{ url_for('register_page') }}">Register</a></li>
+        <li><a href="{{ url_for('roster_page') }}">Roster</a> </li>
+        <li><a href="{{ url_for('tournament_page') }}">Tournament</a></li>
         <li><a href="/match">Match</a></li>
     </ul>
 
