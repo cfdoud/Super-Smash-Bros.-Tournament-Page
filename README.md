@@ -1,2 +1,3 @@
 ﻿# CSE111-Proj
- SSB Tournament 
+ SSB Tournament
+ SQL, RESTAPI
